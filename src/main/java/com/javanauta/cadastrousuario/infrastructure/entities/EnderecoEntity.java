@@ -55,4 +55,7 @@ public class EnderecoEntity {
     public int hashCode() {
         return Objects.hash(id, rua, numero, bairro, complemento, cidade, cep);
     }
+
+
+
 }
