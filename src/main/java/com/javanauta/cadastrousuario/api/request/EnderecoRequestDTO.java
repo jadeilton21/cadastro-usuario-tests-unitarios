@@ -1,6 +1,5 @@
 package com.javanauta.cadastrousuario.api.request;
 
-import jakarta.persistence.Column;
 import lombok.*;
 
 @Getter
@@ -8,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode
 public class EnderecoRequestDTO {
 
     private String rua;
