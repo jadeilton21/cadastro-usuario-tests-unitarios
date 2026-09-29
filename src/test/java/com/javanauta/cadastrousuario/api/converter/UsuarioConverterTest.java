@@ -53,6 +53,10 @@ class UsuarioConverterTest {
         UsuarioEntity entity = usuarioConverter.paraUsuarioEntity(usuarioRequestDTO);
 
         assertEquals(usuarioEntity,entity);
+
+
+
+
     }
 
 
