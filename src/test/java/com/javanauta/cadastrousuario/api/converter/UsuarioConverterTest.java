@@ -55,8 +55,6 @@ class UsuarioConverterTest {
         assertEquals(usuarioEntity,entity);
 
 
-
-
     }
 
 
