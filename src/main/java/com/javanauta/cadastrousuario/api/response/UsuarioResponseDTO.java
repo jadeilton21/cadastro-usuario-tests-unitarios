@@ -6,8 +6,6 @@ public record UsuarioResponseDTO(Long id,
 
                                  String email,
 
-                                 String documento,
-
                                  EnderecoResponseDTO endereco) {
 
 

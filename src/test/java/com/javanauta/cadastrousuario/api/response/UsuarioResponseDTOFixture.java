@@ -1,8 +1,6 @@
 package com.javanauta.cadastrousuario.api.response;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class UsuarioResponseDTOTest {
+public class UsuarioResponseDTOFixture {
 
     public static UsuarioResponseDTO build(Long id,
 
@@ -10,10 +8,8 @@ class UsuarioResponseDTOTest {
 
                                            String email,
 
-                                           String documento,
-
                                            EnderecoResponseDTO endereco){
-        return new UsuarioResponseDTO(id,nome, email, documento, endereco);
+        return new UsuarioResponseDTO(id,nome, email, endereco);
     }
 
 }

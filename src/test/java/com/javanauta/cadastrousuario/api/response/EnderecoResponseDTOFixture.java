@@ -1,8 +1,6 @@
 package com.javanauta.cadastrousuario.api.response;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class EnderecoResponseDTOTest {
+public class EnderecoResponseDTOFixture {
 
     public static EnderecoResponseDTO build(String rua,
 
