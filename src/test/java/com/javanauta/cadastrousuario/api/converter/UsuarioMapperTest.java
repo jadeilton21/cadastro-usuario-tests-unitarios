@@ -76,7 +76,5 @@ class UsuarioMapperTest {
         assertEquals(usuarioResponseDTO, dto);
     }
 
-
-
     
 }
