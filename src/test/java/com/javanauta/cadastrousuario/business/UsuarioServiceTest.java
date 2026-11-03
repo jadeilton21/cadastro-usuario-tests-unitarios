@@ -161,4 +161,27 @@ class UsuarioServiceTest {
         assertThat(e.getCause().getMessage(), is("Os dados do usuário são obrigatórios"));
         verifyNoInteractions(usuarioMapper,usuarioConverter,usuarioRepository);
     }
+
+    @Test
+    void deveGerarExcecaoCasoOcorraErroAoGravarUsuario(){
+        when(usuarioConverter.paraUsuarioEntity(usuarioRequestDTO)).thenReturn(usuarioEntity);
+        when(usuarioRepository.saveAndFlush(usuarioEntity)).thenThrow(new RuntimeException("Falha ao gravar dados de usuário"));
+
+
+        BusinessException e = assertThrows(BusinessException.class, () -> usuarioService.gravarUsuarios(usuarioRequestDTO));
+        assertThat(e,notNullValue());
+        assertThat(e.getMessage(), is("Erro ao gravar dados de usuário"));
+        assertThat(e.getCause().getClass(), is(RuntimeException.class));
+        assertThat(e.getCause().getMessage(), is("Falha ao gravar dados de usuário"));
+
+        verify(usuarioConverter).paraUsuarioEntity(usuarioRequestDTO);
+        verify(usuarioRepository).saveAndFlush(usuarioEntity);
+
+        verifyNoInteractions(usuarioMapper);
+        verifyNoMoreInteractions(usuarioRepository, usuarioConverter);
+    }
+
 }
+
+
+
