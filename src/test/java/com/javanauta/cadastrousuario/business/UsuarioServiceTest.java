@@ -13,6 +13,7 @@ import com.javanauta.cadastrousuario.api.response.UsuarioResponseDTO;
 import com.javanauta.cadastrousuario.api.response.UsuarioResponseDTOFixture;
 import com.javanauta.cadastrousuario.infrastructure.entities.EnderecoEntity;
 import com.javanauta.cadastrousuario.infrastructure.entities.UsuarioEntity;
+import com.javanauta.cadastrousuario.infrastructure.exceptions.BusinessException;
 import com.javanauta.cadastrousuario.infrastructure.repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,9 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -144,4 +148,17 @@ class UsuarioServiceTest {
         verifyNoMoreInteractions(usuarioRepository,usuarioConverter,usuarioMapper);
     }
 
+
+    @Test
+    void naoDeveSalvarUsuarioCasoUsuarioRequestDTONull(){
+
+        BusinessException e = assertThrows(BusinessException.class, () -> usuarioService.gravarUsuarios(null));
+
+
+        assertThat(e,notNullValue());
+        assertThat(e.getMessage(), is("Erro ao gravar dados de usuário"));
+        assertThat(e.getCause(),notNullValue());
+        assertThat(e.getCause().getMessage(), is("Os dados do usuário são obrigatórios"));
+        verifyNoInteractions(usuarioMapper,usuarioConverter,usuarioRepository);
+    }
 }
