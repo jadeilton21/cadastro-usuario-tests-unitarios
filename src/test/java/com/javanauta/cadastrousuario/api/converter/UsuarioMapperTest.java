@@ -63,7 +63,7 @@ class UsuarioMapperTest {
                 "Piranhas",
                 "77777777777"
         );
-        usuarioResponseDTO = UsuarioResponseDTOFixture.build(123456L, "usuario", "usuario@gmail.com", enderecoResponseDTO);
+        usuarioResponseDTO = UsuarioResponseDTOFixture.build(123456L, "usuario", "usuario@gmail.com","123456" ,enderecoResponseDTO);
 
 
     }

@@ -7,9 +7,9 @@ public class UsuarioResponseDTOFixture {
                                            String nome,
 
                                            String email,
-
+                                           String documento,
                                            EnderecoResponseDTO endereco){
-        return new UsuarioResponseDTO(id,nome, email, endereco);
+        return new UsuarioResponseDTO(id,nome, email, documento,endereco);
     }
 
 }
