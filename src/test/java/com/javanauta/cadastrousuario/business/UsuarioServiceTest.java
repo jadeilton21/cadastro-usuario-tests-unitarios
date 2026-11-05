@@ -64,10 +64,11 @@ class UsuarioServiceTest {
 
     EnderecoResponseDTO enderecoResponseDTO;
     LocalDateTime dataHora;
+    String email;
 
     @BeforeEach
-    public void setup(){
-        dataHora = LocalDateTime.of(2026,10, 05, 12, 8);
+    public void setup() {
+        dataHora = LocalDateTime.of(2026, 10, 05, 12, 8);
         enderecoEntity = EnderecoEntity.builder()
                 .rua("campo grande")
                 .bairro("nossa senhora da saude")
@@ -101,26 +102,25 @@ class UsuarioServiceTest {
                 "Piranhas",
                 "77777777777"
         );
-        usuarioResponseDTO = UsuarioResponseDTOFixture.build(12345L,"usuario", "usuario@gmail.com","123456", enderecoResponseDTO);
+        usuarioResponseDTO = UsuarioResponseDTOFixture.build(12345L, "usuario", "usuario@gmail.com", "123456", enderecoResponseDTO);
+        email = "usuario@gmail.com";
+    }
+
+
+    @Test
+    public void testLoginSucesso() {
 
     }
 
 
     @Test
-    public void testLoginSucesso(){
-
-    }
-
-
-
-    @Test
-    void deveSalvarUsuarioComSucesso(){
+    void deveSalvarUsuarioComSucesso() {
         when(usuarioRepository.saveAndFlush(usuarioEntity)).thenReturn(usuarioEntity);
 
 
         UsuarioEntity entity = usuarioService.salvaUsuario(usuarioEntity);
 
-        assertEquals(entity,usuarioEntity);
+        assertEquals(entity, usuarioEntity);
         verify(usuarioRepository).saveAndFlush(usuarioEntity);
         verifyNoMoreInteractions(usuarioRepository);
 
@@ -129,7 +129,7 @@ class UsuarioServiceTest {
 
 
     @Test
-    void deveGravarUsuarioComSucesso(){
+    void deveGravarUsuarioComSucesso() {
 
 
         when(usuarioConverter.paraUsuarioEntity(usuarioRequestDTO)).thenReturn(usuarioEntity);
@@ -145,31 +145,31 @@ class UsuarioServiceTest {
         verify(usuarioRepository).saveAndFlush(usuarioEntity);
         verify(usuarioMapper).paraUsuarioResponseDTO(usuarioEntity);
 
-        verifyNoMoreInteractions(usuarioRepository,usuarioConverter,usuarioMapper);
+        verifyNoMoreInteractions(usuarioRepository, usuarioConverter, usuarioMapper);
     }
 
 
     @Test
-    void naoDeveSalvarUsuarioCasoUsuarioRequestDTONull(){
+    void naoDeveSalvarUsuarioCasoUsuarioRequestDTONull() {
 
         BusinessException e = assertThrows(BusinessException.class, () -> usuarioService.gravarUsuarios(null));
 
 
-        assertThat(e,notNullValue());
+        assertThat(e, notNullValue());
         assertThat(e.getMessage(), is("Erro ao gravar dados de usuário"));
-        assertThat(e.getCause(),notNullValue());
+        assertThat(e.getCause(), notNullValue());
         assertThat(e.getCause().getMessage(), is("Os dados do usuário são obrigatórios"));
-        verifyNoInteractions(usuarioMapper,usuarioConverter,usuarioRepository);
+        verifyNoInteractions(usuarioMapper, usuarioConverter, usuarioRepository);
     }
 
     @Test
-    void deveGerarExcecaoCasoOcorraErroAoGravarUsuario(){
+    void deveGerarExcecaoCasoOcorraErroAoGravarUsuario() {
         when(usuarioConverter.paraUsuarioEntity(usuarioRequestDTO)).thenReturn(usuarioEntity);
         when(usuarioRepository.saveAndFlush(usuarioEntity)).thenThrow(new RuntimeException("Falha ao gravar dados de usuário"));
 
 
         BusinessException e = assertThrows(BusinessException.class, () -> usuarioService.gravarUsuarios(usuarioRequestDTO));
-        assertThat(e,notNullValue());
+        assertThat(e, notNullValue());
         assertThat(e.getMessage(), is("Erro ao gravar dados de usuário"));
         assertThat(e.getCause().getClass(), is(RuntimeException.class));
         assertThat(e.getCause().getMessage(), is("Falha ao gravar dados de usuário"));
@@ -181,7 +181,51 @@ class UsuarioServiceTest {
         verifyNoMoreInteractions(usuarioRepository, usuarioConverter);
     }
 
+
+    @Test
+    void deveAtualizarCadastroDeUsuarioComSucesso() {
+        when(usuarioRepository.findByEmail(email)).thenReturn(usuarioEntity);
+        when(usuarioUpdateMapper.updateUsuarioFromDTO(usuarioRequestDTO, usuarioEntity)).thenReturn(usuarioEntity);
+        when(usuarioRepository.saveAndFlush(usuarioEntity)).thenReturn(usuarioEntity);
+        when(usuarioMapper.paraUsuarioResponseDTO(usuarioEntity)).thenReturn(usuarioResponseDTO);
+
+        UsuarioResponseDTO dto = usuarioService.atualizaCadastro(usuarioRequestDTO);
+        assertEquals(dto, usuarioResponseDTO);
+        verify(usuarioRepository).findByEmail(email);
+        verify(usuarioMapper).paraUsuarioResponseDTO(usuarioEntity);
+        verifyNoMoreInteractions(usuarioRepository,usuarioUpdateMapper, usuarioMapper);
+    }
+    @Test
+    void naoDeveAtualizarDadosDeUsuarioCasoUsuarioRequestDTONull() {
+
+        BusinessException e = assertThrows(BusinessException.class, () -> usuarioService.atualizaCadastro(null));
+
+
+        assertThat(e, notNullValue());
+        assertThat(e.getMessage(), is("Erro ao gravar dados de usuário"));
+        assertThat(e.getCause(), notNullValue());
+        assertThat(e.getCause().getMessage(), is("Os dados do usuário são obrigatórios"));
+        verifyNoInteractions(usuarioMapper, usuarioUpdateMapper, usuarioRepository);
+    }
+
+    @Test
+    void deveGerarExcecaoCasoOcorraErroAoBuscarUsuario() {
+
+        when(usuarioRepository.findByEmail(email)).thenThrow(new RuntimeException("Falha ao buscar dados de usuário"));
+
+
+        BusinessException e = assertThrows(BusinessException.class, () -> usuarioService.atualizaCadastro(usuarioRequestDTO));
+        assertThat(e, notNullValue());
+        assertThat(e.getMessage(), is("Erro ao gravar dados de usuário"));
+        assertThat(e.getCause().getClass(), is(RuntimeException.class));
+        assertThat(e.getCause().getMessage(), is("Falha ao buscar dados de usuário"));
+
+
+        verify(usuarioRepository).findByEmail(email);
+
+        verifyNoInteractions(usuarioMapper,usuarioUpdateMapper);
+        verifyNoMoreInteractions(usuarioRepository);
+    }
+
+
 }
-
-
-
